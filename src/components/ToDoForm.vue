@@ -1,37 +1,39 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed } from "vue";
 
-const emit = defineEmits(['add-todo'])
+const emit = defineEmits(["add-todo"]);
 
-const text = ref('')
-const priority = ref('')
+const text = ref("");
+const priority = ref("");
 
-const charsLeft = computed(() => 50 - text.value.length)
-const tooLong = computed(() => text.value.length >= 50)
+const charsLeft = computed(() => 50 - text.value.length);
+const tooLong = computed(() => text.value.length >= 50);
 
 function submitTodo() {
-  if (text.value.trim() !== '' && priority.value !== '') {
-    emit('add-todo', { 
-      text: text.value, 
-      priority: priority.value 
-    })
-    text.value = ''
-    priority.value = ''
+  if (text.value.trim() !== "" && priority.value !== "") {
+    emit("add-todo", {
+      text: text.value,
+      priority: priority.value,
+    });
+    text.value = "";
+    priority.value = "";
   }
 }
 </script>
 
 <template>
-  <form id="todo-form" @submit.prevent="submitTodo">
+  <form id="todo-form" v-on:submit.prevent="submitTodo">
     <span id="input-and-counter">
-      <input
+      <textarea
         id="todo-input"
         v-model="text"
         maxlength="50"
         placeholder="Add task..."
-      />
-        <p v-if="tooLong" class="warning">⚠️ Max 50 characters reached!</p>
-        <p v-else class="counter">{{ charsLeft }} characters left</p>
+        rows="2"
+        style="resize: vertical"
+      ></textarea>
+      <p v-if="tooLong" class="warning">⚠️ Max 50 characters reached!</p>
+      <p v-else class="counter">{{ charsLeft }} characters left</p>
     </span>
     <select id="priority" v-model="priority">
       <option disabled value="">-- Select priority --</option>
@@ -48,8 +50,9 @@ function submitTodo() {
 #todo-form {
   display: grid;
   grid-template-columns: 1fr auto;
-  grid-template-areas: "input input"
-                       "priority add-todo-button";
+  grid-template-areas:
+    "input input"
+    "priority add-todo-button";
   gap: 12px;
   align-items: center;
   margin-bottom: 24px;
@@ -67,6 +70,7 @@ function submitTodo() {
   width: 50ch;
   margin-bottom: 4px;
   font-family: monospace;
+  box-sizing: border-box;
 }
 
 .warning {
@@ -94,6 +98,7 @@ function submitTodo() {
 #add-todo-button {
   grid-area: add-todo-button;
   display: inline-flex;
+  margin: auto;
   background-color: #4caf50;
   border: none;
   border-radius: 6px;
@@ -104,5 +109,24 @@ function submitTodo() {
 
 #add-todo-button:hover {
   background-color: #45a049;
+}
+
+@media screen and (max-width: 600px) {
+  #todo-form {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "input"
+      "priority"
+      "add-todo-button";
+    gap: 8px;
+  }
+
+  #todo-input {
+    width: 30ch;
+  }
+
+  #add-todo-button {
+    padding: 12px 18px;
+  }
 }
 </style>

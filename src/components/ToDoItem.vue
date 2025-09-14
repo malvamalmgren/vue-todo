@@ -1,32 +1,32 @@
 <script setup>
-import { computed } from 'vue'
+import { computed } from "vue";
 
 const props = defineProps({
-  todo: Object
-})
-const emit = defineEmits(['remove-todo'])
+  todo: Object,
+});
+const emit = defineEmits(["remove-todo"]);
 
 const priorityColor = computed(() => {
   switch (props.todo.priority) {
-    case 'low':
-      return '#c8f7c5'
-    case 'medium':
-      return '#ffe082'
-    case 'high':
-      return '#ff8a80'
+    case "low":
+      return "#c8f7c5";
+    case "medium":
+      return "#ffe082";
+    case "high":
+      return "#ff8a80";
     default:
-      return '#f0f0f0'
+      return "#f0f0f0";
   }
-})
+});
 </script>
 
 <template>
-  <li
-    class="todo-item"
-    :style="{ backgroundColor: priorityColor }"
-  >
+  <li class="todo-item" v-bind:style="{ backgroundColor: priorityColor }">
     <span class="text">{{ props.todo.text }}</span>
-    <button class="delete-todo-button" @click="emit('remove-todo', props.todo.id)">
+    <button
+      class="delete-todo-button"
+      v-on:click="emit('remove-todo', props.todo.id)"
+    >
       ✖
     </button>
   </li>
@@ -41,7 +41,7 @@ const priorityColor = computed(() => {
   min-height: 120px;
   width: 160px;
   border-radius: 6px;
-  box-shadow: 2px 2px 6px rgba(0,0,0,0.15);
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.15);
   font-size: 1rem;
   font-style: italic;
   font-weight: 500;
