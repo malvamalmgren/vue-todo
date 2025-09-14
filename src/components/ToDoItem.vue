@@ -1,81 +1,70 @@
 <script setup>
-  const props = defineProps({
-    todo: Object
-  })
-  const emit = defineEmits(['remove-todo'])
+import { computed } from 'vue'
+
+const props = defineProps({
+  todo: Object
+})
+const emit = defineEmits(['remove-todo'])
+
+const priorityColor = computed(() => {
+  switch (props.todo.priority) {
+    case 'low':
+      return '#c8f7c5'
+    case 'medium':
+      return '#ffe082'
+    case 'high':
+      return '#ff8a80'
+    default:
+      return '#f0f0f0'
+  }
+})
 </script>
 
 <template>
-  <li :class="['todo-item', todo.priority]">
-    <span class="priority"></span>
-    <p class="todo-text">{{ todo.text }}</p>
-    <button class="delete-todo-button" @click="emit('remove-todo', todo.id)">Delete</button>
+  <li
+    class="todo-item"
+    :style="{ backgroundColor: priorityColor }"
+  >
+    <span class="text">{{ props.todo.text }}</span>
+    <button class="delete-todo-button" @click="emit('remove-todo', props.todo.id)">
+      ✖
+    </button>
   </li>
 </template>
 
 <style scoped>
-
 .todo-item {
-  display: grid;
-  grid-template-columns: auto minmax(0, 70ch) auto;
-  grid-template-areas: "priority text delete";
+  display: flex;
+  justify-content: center;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 12px;
-  margin-bottom: 12px;
-  padding: 0 12px;
-}
+  padding: 20px;
+  min-height: 120px;
+  width: 160px;
+  border-radius: 6px;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.15);
+  font-size: 1rem;
+  font-style: italic;
+  font-weight: 500;
+  text-align: center;
 
-.todo-text {
-  grid-area: text;
-  max-width: 70ch;
-  font-size: 14px;
-  overflow-wrap: break-word; 
-}
-
-.priority {
-  width: 24px;
-  height: 100%;
-  transform: translateX(-12px);
-  margin-right: 12px;
-  border-radius: 12px 0 0 12px;
-}
-
-.todo-item.low .priority {
-  background-color: #4aa027;
-}
-
-.todo-item.medium .priority {
-  background-color: #ff9800;
-}
-
-.todo-item.high .priority {
-  background-color: #f44336;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  position: relative;
 }
 
 .delete-todo-button {
-  display: flex;
-  margin-left: 12px;
-  background-color: #ff4d4d;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: transparent;
   border: none;
-  border-radius: 6px;
-  color: white;
+  font-size: 1rem;
   cursor: pointer;
-  padding: 4px 8px;
-}
-.delete-todo-button:hover {
-  background-color: #ff1a1a;
+  color: #333;
 }
 
-@media screen and (max-width: 600px) {
-  .todo-item {
-    grid-template-columns: auto minmax(0, 30ch) auto;
-  }
-  .todo-text {  
-    font-size: 12px;
-  }
-  .priority {
-    width: 12px;
-  }
+.delete-todo-button:hover {
+  color: #000;
 }
 </style>
