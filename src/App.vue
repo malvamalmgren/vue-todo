@@ -11,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import type { NewTodo, Priority, SortKey, Todo } from "@/types/todo";
 
@@ -100,13 +99,11 @@ const sortedTodos = computed<Todo[]>(() => {
         <div class="flex items-center justify-between gap-3">
           <div class="flex min-w-0 items-center gap-3">
             <div
-              class="flex size-[52px] shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground sm:size-9"
+              class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground"
             >
-              <ClipboardListIcon class="size-5 sm:size-4" aria-hidden="true" />
+              <ClipboardListIcon class="size-4" aria-hidden="true" />
             </div>
-            <div
-              class="m-0 flex h-[52px] min-w-0 flex-col justify-end gap-0.5 p-0 sm:h-9"
-            >
+            <div class="m-0 flex h-9 min-w-0 flex-col justify-end gap-0.5 p-0">
               <h2
                 class="m-0 p-0 text-lg font-semibold leading-none tracking-normal"
               >
@@ -118,19 +115,21 @@ const sortedTodos = computed<Todo[]>(() => {
             </div>
           </div>
 
-          <div
-            class="grid shrink-0 justify-items-start gap-1 sm:flex sm:items-center sm:gap-2"
-          >
-            <div class="flex items-center gap-2">
-              <ListFilterIcon
-                class="size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-              <Label for="sort-select" class="text-sm">Sort by</Label>
-            </div>
+          <div class="flex shrink-0 items-center gap-2">
             <Select v-model="sortBy">
-              <SelectTrigger id="sort-select" class="w-36 cursor-pointer">
-                <SelectValue placeholder="Sort" class="cursor-pointer" />
+              <SelectTrigger
+                id="sort-select"
+                class="w-36 cursor-pointer justify-start [&>svg:last-child]:ml-auto"
+                aria-label="Sort by"
+              >
+                <ListFilterIcon
+                  class="size-4 text-muted-foreground"
+                  aria-hidden="true"
+                />
+                <SelectValue
+                  placeholder="Sort"
+                  class="min-w-0 flex-1 ml-1 cursor-pointer text-left"
+                />
               </SelectTrigger>
               <SelectContent position="popper" side="bottom" align="start">
                 <SelectItem value="id"> Date </SelectItem>
