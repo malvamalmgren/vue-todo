@@ -66,9 +66,7 @@ function submitLogin(): void {
     ]"
   >
     <div class="min-w-0">
-      <h1
-        class="truncate text-2xl font-medium uppercase tracking-normal text-muted-foreground sm:text-3xl"
-      >
+      <h1 class="text-2xl font-medium uppercase tracking-normal text-muted-foreground">
         Todo board
       </h1>
       <p v-if="!loggedIn" class="text-sm text-muted-foreground">
@@ -78,7 +76,7 @@ function submitLogin(): void {
 
     <form
       v-if="!loggedIn"
-      class="grid w-full gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] lg:w-auto"
+      class="grid w-full gap-3 sm:w-auto sm:grid-cols-[8rem_8rem_auto] sm:items-start sm:gap-2"
       v-on:submit.prevent="submitLogin"
     >
       <div class="grid gap-1">
@@ -92,7 +90,7 @@ function submitLogin(): void {
             id="username-input"
             v-model="usernameInput"
             autocomplete="username"
-            class="h-9 pl-8"
+            class="h-9 pl-8 text-sm"
             minlength="3"
             placeholder="Username"
           />
@@ -112,7 +110,7 @@ function submitLogin(): void {
           id="password-input"
           v-model="passwordInput"
           autocomplete="current-password"
-          class="h-9 pl-8"
+          class="h-9 pl-8 text-sm"
           placeholder="Password"
           type="password"
         />
