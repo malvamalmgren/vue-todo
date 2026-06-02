@@ -1,12 +1,23 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from "vue";
 
-const props = defineProps({
-  todo: Object,
-});
-const emit = defineEmits(["remove-todo"]);
+type Priority = "low" | "medium" | "high";
 
-const priorityColor = computed(() => {
+type Todo = {
+  id: number;
+  text: string;
+  priority: Priority;
+};
+
+const props = defineProps<{
+  todo: Todo;
+}>();
+
+const emit = defineEmits<{
+  "remove-todo": [id: number];
+}>();
+
+const priorityColor = computed<string>(() => {
   switch (props.todo.priority) {
     case "low":
       return "#c8f7c5";

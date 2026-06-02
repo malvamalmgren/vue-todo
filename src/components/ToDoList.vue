@@ -1,10 +1,21 @@
-<script setup>
+<script setup lang="ts">
 import ToDoItem from "./ToDoItem.vue";
 
-const props = defineProps({
-  todos: Array,
-});
-const emit = defineEmits(["remove-todo"]);
+type Priority = "low" | "medium" | "high";
+
+type Todo = {
+  id: number;
+  text: string;
+  priority: Priority;
+};
+
+defineProps<{
+  todos: Todo[];
+}>();
+
+const emit = defineEmits<{
+  "remove-todo": [id: number];
+}>();
 </script>
 
 <template>

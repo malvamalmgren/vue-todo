@@ -1,15 +1,19 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from "vue";
 
-const emit = defineEmits(["add-todo"]);
+type Priority = "low" | "medium" | "high";
+
+const emit = defineEmits<{
+  "add-todo": [todo: { text: string; priority: Priority }];
+}>();
 
 const text = ref("");
-const priority = ref("");
+const priority = ref<Priority | "">("");
 
 const charsLeft = computed(() => 50 - text.value.length);
 const tooLong = computed(() => text.value.length >= 50);
 
-function submitTodo() {
+function submitTodo(): void {
   if (text.value.trim() !== "" && priority.value !== "") {
     emit("add-todo", {
       text: text.value,

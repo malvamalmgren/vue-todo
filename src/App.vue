@@ -1,11 +1,27 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from "vue";
 import ToDoList from "./components/ToDoList.vue";
 import ToDoForm from "./components/ToDoForm.vue";
+import LoginForm from "./components/LoginForm.vue";
 
-const todos = ref([]);
+type Priority = "low" | "medium" | "high";
 
-function addTodo(newTodo) {
+type Todo = {
+  id: number;
+  text: string;
+  priority: Priority;
+};
+
+type NewTodo = Omit<Todo, "id">;
+
+type LoginCredentials = {
+  username: string;
+  password: string;
+};
+
+const todos = ref<Todo[]>([]);
+
+function addTodo(newTodo: NewTodo): void {
   todos.value.push({
     id: Date.now(),
     text: newTodo.text,
@@ -13,36 +29,38 @@ function addTodo(newTodo) {
   });
 }
 
-function removeTodo(id) {
+function removeTodo(id: number): void {
   todos.value = todos.value.filter((todo) => todo.id !== id);
 }
 
 const loggedIn = ref(false);
-const username = ref(null);
-const usernameInput = ref("");
-const headerText = computed(() => {
-  return loggedIn.value
-    ? `Welcome back, ${username.value}!`
-    : "Please log in...";
-});
-function login() {
-  if (usernameInput.value.trim() === "") return;
+const username = ref<string | null>(null);
+
+function login({ username: nextUsername }: LoginCredentials): void {
   loggedIn.value = true;
-  username.value = usernameInput.value;
-  usernameInput.value = "";
+  username.value = nextUsername;
 }
 
-const sortBy = ref("id");
+function logout(): void {
+  loggedIn.value = false;
+  username.value = null;
+}
 
-const sortedTodos = computed(() => {
+type SortKey = "id" | "text" | "priority";
+
+const sortBy = ref<SortKey>("id");
+
+const sortedTodos = computed<Todo[]>(() => {
   return [...todos.value].sort((a, b) => {
     if (sortBy.value === "text") {
       return a.text.localeCompare(b.text);
     } else if (sortBy.value === "priority") {
-      const priorityOrder = { high: 3, medium: 2, low: 1 };
-      return (
-        (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0)
-      );
+      const priorityOrder: Record<Priority, number> = {
+        high: 3,
+        medium: 2,
+        low: 1,
+      };
+      return priorityOrder[b.priority] - priorityOrder[a.priority];
     } else {
       return b.id - a.id;
     }
@@ -52,25 +70,12 @@ const sortedTodos = computed(() => {
 
 <template>
   <header>
-    <h1 id="login-header">{{ headerText }}</h1>
-
-    <form id="login-form" v-on:submit.prevent="login">
-      <input
-        id="usernameInput"
-        v-if="!loggedIn"
-        v-model="usernameInput"
-        placeholder="Enter your name..."
-      />
-      <button v-if="!loggedIn" id="login-button" type="submit">Log In</button>
-      <button
-        v-else
-        id="logout-button"
-        type="button"
-        v-on:click="loggedIn = false"
-      >
-        Log Out
-      </button>
-    </form>
+    <LoginForm
+      v-bind:logged-in="loggedIn"
+      v-bind:username="username"
+      v-on:login="login"
+      v-on:logout="logout"
+    />
   </header>
   <main v-if="loggedIn">
     <ToDoForm v-on:add-todo="addTodo" />
@@ -102,44 +107,8 @@ body {
 header {
   grid-area: header;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   background-color: #fff;
   padding: 20px 40px;
-}
-
-#login-header {
-  font-size: 1.8rem;
-  font-weight: 500;
-  color: #333;
-  margin: 0;
-}
-
-#login-form {
-  display: flex;
-  gap: 12px;
-}
-
-#usernameInput {
-  padding: 8px;
-  border-radius: 8px;
-  width: 100%;
-}
-
-#login-button,
-#logout-button {
-  background-color: #ddd;
-  border: none;
-  border-radius: 6px;
-  color: #333;
-  cursor: pointer;
-  padding: 6px 12px;
-  width: 96px;
-}
-
-#login-button:hover,
-#logout-button:hover {
-  background-color: #bbb;
 }
 
 main {
@@ -207,33 +176,7 @@ ul {
   }
   header {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
     padding: 20px;
-  }
-
-  #login-header {
-    margin-bottom: 16px;
-  }
-
-  #login-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-  }
-
-  #usernameInput {
-    width: 80%;
-    max-width: 320px;
-  }
-
-  #login-button,
-  #logout-button {
-    align-self: center;
   }
 
   main {
