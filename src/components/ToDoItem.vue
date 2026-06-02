@@ -20,18 +20,21 @@ const priorityStyles: Record<
 > = {
   low: {
     label: "Low",
-    card: "border-emerald-200 bg-emerald-50/80",
-    badge: "border-emerald-200 bg-emerald-100 text-emerald-900",
+    card: "border-[var(--priority-low)]/80",
+    badge:
+      "border-[var(--priority-low)]/80 bg-[var(--priority-low)]/20 text-[var(--priority-text-low)]",
   },
   medium: {
     label: "Medium",
-    card: "border-amber-200 bg-amber-50/80",
-    badge: "border-amber-200 bg-amber-100 text-amber-900",
+    card: "border-[var(--priority-medium)]/80",
+    badge:
+      "border-[var(--priority-medium)]/80 bg-[var(--priority-medium)]/20 text-[var(--priority-text-medium)]",
   },
   high: {
     label: "High",
-    card: "border-rose-200 bg-rose-50/80",
-    badge: "border-rose-200 bg-rose-100 text-rose-900",
+    card: "border-[var(--priority-high)]/80",
+    badge:
+      "border-[var(--priority-high)]/80 bg-[var(--priority-high)]/20 text-[var(--priority-text-high)]",
   },
 };
 
@@ -46,7 +49,7 @@ const priorityStyle = computed(() => priorityStyles[props.todo.priority]);
         priorityStyle.card,
       ]"
     >
-      <CardContent class="flex h-full flex-col gap-4 p-4">
+      <CardContent class="flex h-full flex-col gap-4">
         <div class="flex items-start justify-between gap-3">
           <Badge variant="outline" v-bind:class="priorityStyle.badge">
             {{ priorityStyle.label }}
