@@ -106,9 +106,13 @@ const sortedTodos = computed<Todo[]>(() => {
             >
               <ClipboardListIcon class="size-4" aria-hidden="true" />
             </div>
-            <div class="min-w-0">
-              <h2 class="text-lg font-semibold tracking-normal">Tasks</h2>
-              <p class="text-sm text-muted-foreground">{{ todoCountLabel }}</p>
+            <div class="m-0 flex h-9 min-w-0 flex-col justify-end gap-0.5 p-0">
+              <h2 class="m-0 p-0 text-lg font-semibold leading-none tracking-normal">
+                Tasks
+              </h2>
+              <p class="m-0 p-0 text-sm leading-none text-muted-foreground">
+                {{ todoCountLabel }}
+              </p>
             </div>
           </div>
 
