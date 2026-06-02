@@ -81,12 +81,13 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --priority-low: #96dd53;
-  --priority-text-low: #51a105;
-  --priority-medium: #f1d359;
-  --priority-text-medium: #b18e04;
-  --priority-high: #e26879;
-  --priority-text-high: #b82538;
+  --avatar-background: oklch(86.566% 0.01555 229.241);
+  --priority-low: oklch(0.8229 0.1949 131.58);
+  --priority-text-low: oklch(0.6328 0.1906 135.06);
+  --priority-medium: oklch(0.8698 0.1713 99.49);
+  --priority-text-medium: oklch(0.6606 0.162 96.17);
+  --priority-high: oklch(0.6691 0.1469 26.23);
+  --priority-text-high: oklch(0.5132 0.1803 35.66);
 }
 
 .dark {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { computed, nextTick, ref } from "vue";
 import { PlusIcon } from "@lucide/vue";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -76,6 +76,18 @@ function setPriority(nextPriority: unknown): void {
   }
 }
 
+function resizeTextarea(event?: Event): void {
+  const textarea =
+    event?.target instanceof HTMLTextAreaElement
+      ? event.target
+      : document.querySelector<HTMLTextAreaElement>("#todo-input");
+
+  if (!textarea) return;
+
+  textarea.style.height = "auto";
+  textarea.style.height = `${textarea.scrollHeight}px`;
+}
+
 function submitTodo(): void {
   const trimmedText = text.value.trim();
 
@@ -85,7 +97,8 @@ function submitTodo(): void {
       priority: priority.value,
     });
     text.value = "";
-    priority.value = "medium";
+    priority.value = "low";
+    void nextTick(resizeTextarea);
   }
 }
 </script>
@@ -107,10 +120,11 @@ function submitTodo(): void {
       <Textarea
         id="todo-input"
         v-model="text"
-        class="min-h-24 resize-y"
+        class="min-h-24 resize-none overflow-hidden"
         maxlength="250"
         placeholder="Add task..."
         rows="3"
+        v-on:input="resizeTextarea"
       />
     </div>
 

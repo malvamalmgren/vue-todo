@@ -86,7 +86,10 @@ const sortedTodos = computed<Todo[]>(() => {
       </div>
     </header>
 
-    <main v-if="loggedIn" class="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:px-6">
+    <main
+      v-if="loggedIn"
+      class="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:px-6"
+    >
       <section
         class="rounded-xl border bg-card p-4 text-card-foreground shadow-xs sm:p-6"
       >
@@ -121,7 +124,7 @@ const sortedTodos = computed<Todo[]>(() => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="id">Date</SelectItem>
-                <SelectItem value="text">Name</SelectItem>
+                <SelectItem value="text">Content</SelectItem>
                 <SelectItem value="priority">Priority</SelectItem>
               </SelectContent>
             </Select>
@@ -130,10 +133,7 @@ const sortedTodos = computed<Todo[]>(() => {
 
         <Separator />
 
-        <ToDoList
-          v-bind:todos="sortedTodos"
-          v-on:remove-todo="removeTodo"
-        />
+        <ToDoList v-bind:todos="sortedTodos" v-on:remove-todo="removeTodo" />
       </section>
     </main>
   </div>
