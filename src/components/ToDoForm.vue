@@ -166,7 +166,7 @@ function submitTodo(): void {
             v-for="option in priorityOptions"
             v-bind:key="option.value"
             v-bind:class="[
-              'relative z-10 h-8 w-full rounded-md border-0 bg-transparent px-4 shadow-none transition-colors hover:bg-transparent data-[state=on]:bg-transparent data-[state=on]:shadow-none',
+              'relative z-10 h-8 w-full cursor-pointer rounded-md border-0 bg-transparent px-4 shadow-none transition-colors hover:bg-transparent data-[state=on]:bg-transparent data-[state=on]:shadow-none',
               priority === option.value
                 ? option.selectedTextClass
                 : 'text-black hover:text-black',
@@ -180,7 +180,7 @@ function submitTodo(): void {
       </div>
 
       <Button
-        class="h-9 w-full sm:w-auto"
+        class="h-9 w-full cursor-pointer sm:w-auto"
         type="submit"
         v-bind:disabled="!canSubmit"
       >

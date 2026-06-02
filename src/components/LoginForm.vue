@@ -118,7 +118,7 @@ function submitLogin(): void {
         />
       </div>
 
-      <Button class="h-9 w-full sm:w-auto" type="submit">
+      <Button class="h-9 w-full cursor-pointer sm:w-auto" type="submit">
         <LogInIcon class="size-4" aria-hidden="true" />
         Log In
       </Button>
@@ -135,7 +135,7 @@ function submitLogin(): void {
         <DropdownMenuTrigger as-child>
           <Button
             aria-label="Open user menu"
-            class="size-9 rounded-full p-0"
+            class="size-9 cursor-pointer rounded-full p-0"
             size="icon"
             type="button"
             variant="ghost"
@@ -150,7 +150,7 @@ function submitLogin(): void {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" class="w-40">
-          <DropdownMenuItem v-on:click="emit('logout')">
+          <DropdownMenuItem class="cursor-pointer" v-on:click="emit('logout')">
             <LogOutIcon class="size-4" aria-hidden="true" />
             Log Out
           </DropdownMenuItem>

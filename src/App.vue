@@ -97,17 +97,19 @@ const sortedTodos = computed<Todo[]>(() => {
       </section>
 
       <section class="grid gap-4">
-        <div
-          class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
-        >
+        <div class="flex items-center justify-between gap-3">
           <div class="flex min-w-0 items-center gap-3">
             <div
-              class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground"
+              class="flex size-[52px] shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground sm:size-9"
             >
-              <ClipboardListIcon class="size-4" aria-hidden="true" />
+              <ClipboardListIcon class="size-5 sm:size-4" aria-hidden="true" />
             </div>
-            <div class="m-0 flex h-9 min-w-0 flex-col justify-end gap-0.5 p-0">
-              <h2 class="m-0 p-0 text-lg font-semibold leading-none tracking-normal">
+            <div
+              class="m-0 flex h-[52px] min-w-0 flex-col justify-end gap-0.5 p-0 sm:h-9"
+            >
+              <h2
+                class="m-0 p-0 text-lg font-semibold leading-none tracking-normal"
+              >
                 Tasks
               </h2>
               <p class="m-0 p-0 text-sm leading-none text-muted-foreground">
@@ -116,20 +118,24 @@ const sortedTodos = computed<Todo[]>(() => {
             </div>
           </div>
 
-          <div class="flex items-center gap-2">
-            <ListFilterIcon
-              class="size-4 text-muted-foreground"
-              aria-hidden="true"
-            />
-            <Label for="sort-select" class="text-sm">Sort by</Label>
+          <div
+            class="grid shrink-0 justify-items-start gap-1 sm:flex sm:items-center sm:gap-2"
+          >
+            <div class="flex items-center gap-2">
+              <ListFilterIcon
+                class="size-4 text-muted-foreground"
+                aria-hidden="true"
+              />
+              <Label for="sort-select" class="text-sm">Sort by</Label>
+            </div>
             <Select v-model="sortBy">
-              <SelectTrigger id="sort-select" class="w-36">
-                <SelectValue placeholder="Sort" />
+              <SelectTrigger id="sort-select" class="w-36 cursor-pointer">
+                <SelectValue placeholder="Sort" class="cursor-pointer" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="id">Date</SelectItem>
-                <SelectItem value="text">Content</SelectItem>
-                <SelectItem value="priority">Priority</SelectItem>
+              <SelectContent position="popper" side="bottom" align="start">
+                <SelectItem value="id"> Date </SelectItem>
+                <SelectItem value="text"> Content </SelectItem>
+                <SelectItem value="priority"> Priority </SelectItem>
               </SelectContent>
             </Select>
           </div>
