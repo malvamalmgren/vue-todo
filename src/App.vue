@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import ToDoList from "./components/ToDoList.vue";
-import ToDoForm from "./components/ToDoForm.vue";
-import LoginForm from "./components/LoginForm.vue";
-
-type Priority = "low" | "medium" | "high";
-
-type Todo = {
-  id: number;
-  text: string;
-  priority: Priority;
-};
-
-type NewTodo = Omit<Todo, "id">;
+import { ClipboardListIcon, ListFilterIcon } from "@lucide/vue";
+import LoginForm from "@/components/LoginForm.vue";
+import ToDoForm from "@/components/ToDoForm.vue";
+import ToDoList from "@/components/ToDoList.vue";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import type { NewTodo, Priority, SortKey, Todo } from "@/types/todo";
 
 type LoginCredentials = {
   username: string;
@@ -36,7 +37,8 @@ function removeTodo(id: number): void {
 const loggedIn = ref(false);
 const username = ref<string | null>(null);
 
-function login({ username: nextUsername }: LoginCredentials): void {
+function login({ username: nextUsername, password }: LoginCredentials): void {
+  void password;
   loggedIn.value = true;
   username.value = nextUsername;
 }
@@ -46,9 +48,12 @@ function logout(): void {
   username.value = null;
 }
 
-type SortKey = "id" | "text" | "priority";
-
 const sortBy = ref<SortKey>("id");
+
+const todoCountLabel = computed(() => {
+  const count = todos.value.length;
+  return count === 1 ? "1 task" : `${count} tasks`;
+});
 
 const sortedTodos = computed<Todo[]>(() => {
   return [...todos.value].sort((a, b) => {
@@ -69,135 +74,67 @@ const sortedTodos = computed<Todo[]>(() => {
 </script>
 
 <template>
-  <header>
-    <LoginForm
-      v-bind:logged-in="loggedIn"
-      v-bind:username="username"
-      v-on:login="login"
-      v-on:logout="logout"
-    />
-  </header>
-  <main v-if="loggedIn">
-    <ToDoForm v-on:add-todo="addTodo" />
-    <hr class="separator" />
-    <div id="sort-container">
-      <label id="sort" for="sort-select">Sort by:</label>
-      <select id="sort-select" v-model="sortBy">
-        <option value="id">Date</option>
-        <option value="text">Name</option>
-        <option value="priority">Priority</option>
-      </select>
-    </div>
+  <div class="min-h-screen bg-muted/35 text-foreground">
+    <header class="border-b bg-background/95">
+      <div class="mx-auto flex w-full max-w-6xl px-4 py-4 sm:px-6">
+        <LoginForm
+          v-bind:logged-in="loggedIn"
+          v-bind:username="username"
+          v-on:login="login"
+          v-on:logout="logout"
+        />
+      </div>
+    </header>
 
-    <ToDoList
-      id="todo-list"
-      v-bind:todos="sortedTodos"
-      v-on:remove-todo="removeTodo"
-    />
-  </main>
+    <main v-if="loggedIn" class="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:px-6">
+      <section
+        class="rounded-xl border bg-card p-4 text-card-foreground shadow-xs sm:p-6"
+      >
+        <ToDoForm v-on:add-todo="addTodo" />
+      </section>
+
+      <section class="grid gap-4">
+        <div
+          class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div class="flex min-w-0 items-center gap-3">
+            <div
+              class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground"
+            >
+              <ClipboardListIcon class="size-4" aria-hidden="true" />
+            </div>
+            <div class="min-w-0">
+              <h2 class="text-lg font-semibold tracking-normal">Tasks</h2>
+              <p class="text-sm text-muted-foreground">{{ todoCountLabel }}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <ListFilterIcon
+              class="size-4 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <Label for="sort-select" class="text-sm">Sort by</Label>
+            <Select v-model="sortBy">
+              <SelectTrigger id="sort-select" class="w-36">
+                <SelectValue placeholder="Sort" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="id">Date</SelectItem>
+                <SelectItem value="text">Name</SelectItem>
+                <SelectItem value="priority">Priority</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <Separator />
+
+        <ToDoList
+          v-bind:todos="sortedTodos"
+          v-on:remove-todo="removeTodo"
+        />
+      </section>
+    </main>
+  </div>
 </template>
-
-<style>
-body {
-  margin: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #7a7a7a;
-}
-
-header {
-  grid-area: header;
-  display: flex;
-  background-color: #fff;
-  padding: 20px 40px;
-}
-
-main {
-  grid-area: main;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 40px auto;
-  padding: 20px;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 10px;
-  max-width: 65%;
-}
-
-.separator {
-  width: 100%;
-  border: 0;
-  height: 1px;
-  background: #ccc;
-  margin: 24px 0;
-}
-
-#sort {
-  align-items: center;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-#sort-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 24px;
-}
-
-#sort-select {
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-#todo-list {
-  display: grid;
-  grid-template-columns: repeat(4, max-content);
-  gap: 36px;
-  justify-content: center;
-  justify-items: center;
-  width: 100%;
-}
-
-@media screen and (min-width: 601px) and (max-width: 1424px) {
-  #todo-list {
-    grid-template-columns: repeat(2, max-content);
-    gap: 24px;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  body {
-    font-size: 0.75rem;
-  }
-  header {
-    display: flex;
-    padding: 20px;
-  }
-
-  main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 20px auto;
-    padding: 12px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 10px;
-    max-width: 90%;
-    min-width: min-content;
-  }
-
-  #todo-list {
-    display: grid;
-    grid-template-columns: repeat(1, max-content);
-    gap: 12px;
-    justify-content: center;
-    justify-items: center;
-    width: 100%;
-  }
-}
-</style>

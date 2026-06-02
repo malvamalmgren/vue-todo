@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import { computed } from "vue";
-
-type Priority = "low" | "medium" | "high";
-
-type Todo = {
-  id: number;
-  text: string;
-  priority: Priority;
-};
+import { Trash2Icon } from "@lucide/vue";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import type { Priority, Todo } from "@/types/todo";
 
 const props = defineProps<{
   todo: Todo;
@@ -17,65 +14,62 @@ const emit = defineEmits<{
   "remove-todo": [id: number];
 }>();
 
-const priorityColor = computed<string>(() => {
-  switch (props.todo.priority) {
-    case "low":
-      return "#c8f7c5";
-    case "medium":
-      return "#ffe082";
-    case "high":
-      return "#ff8a80";
-    default:
-      return "#f0f0f0";
-  }
-});
+const priorityStyles: Record<
+  Priority,
+  { label: string; card: string; badge: string }
+> = {
+  low: {
+    label: "Low",
+    card: "border-emerald-200 bg-emerald-50/80",
+    badge: "border-emerald-200 bg-emerald-100 text-emerald-900",
+  },
+  medium: {
+    label: "Medium",
+    card: "border-amber-200 bg-amber-50/80",
+    badge: "border-amber-200 bg-amber-100 text-amber-900",
+  },
+  high: {
+    label: "High",
+    card: "border-rose-200 bg-rose-50/80",
+    badge: "border-rose-200 bg-rose-100 text-rose-900",
+  },
+};
+
+const priorityStyle = computed(() => priorityStyles[props.todo.priority]);
 </script>
 
 <template>
-  <li class="todo-item" v-bind:style="{ backgroundColor: priorityColor }">
-    <span class="text">{{ props.todo.text }}</span>
-    <button
-      class="delete-todo-button"
-      v-on:click="emit('remove-todo', props.todo.id)"
+  <li>
+    <Card
+      v-bind:class="[
+        'h-full min-h-36 border shadow-xs transition-shadow hover:shadow-sm',
+        priorityStyle.card,
+      ]"
     >
-      ✖
-    </button>
+      <CardContent class="flex h-full flex-col gap-4 p-4">
+        <div class="flex items-start justify-between gap-3">
+          <Badge variant="outline" v-bind:class="priorityStyle.badge">
+            {{ priorityStyle.label }}
+          </Badge>
+
+          <Button
+            aria-label="Remove task"
+            class="size-7 text-muted-foreground hover:text-destructive"
+            size="icon-sm"
+            type="button"
+            variant="ghost"
+            v-on:click="emit('remove-todo', props.todo.id)"
+          >
+            <Trash2Icon class="size-4" aria-hidden="true" />
+          </Button>
+        </div>
+
+        <p
+          class="flex-1 whitespace-pre-wrap break-words text-sm font-medium leading-6"
+        >
+          {{ props.todo.text }}
+        </p>
+      </CardContent>
+    </Card>
   </li>
 </template>
-
-<style scoped>
-.todo-item {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  min-height: 120px;
-  width: 160px;
-  border-radius: 6px;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.15);
-  font-size: 1rem;
-  font-style: italic;
-  font-weight: 500;
-  text-align: center;
-
-  overflow-wrap: break-word;
-  word-break: break-word;
-  hyphens: auto;
-  position: relative;
-}
-
-.delete-todo-button {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  background: transparent;
-  border: none;
-  font-size: 1rem;
-  cursor: pointer;
-  color: #333;
-}
-
-.delete-todo-button:hover {
-  color: #000;
-}
-</style>

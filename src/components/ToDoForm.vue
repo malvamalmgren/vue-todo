@@ -1,7 +1,17 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
-
-type Priority = "low" | "medium" | "high";
+import { PlusIcon } from "@lucide/vue";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { priorityOptions, type Priority } from "@/types/todo";
 
 const emit = defineEmits<{
   "add-todo": [todo: { text: string; priority: Priority }];
@@ -12,11 +22,16 @@ const priority = ref<Priority | "">("");
 
 const charsLeft = computed(() => 50 - text.value.length);
 const tooLong = computed(() => text.value.length >= 50);
+const canSubmit = computed(
+  () => text.value.trim() !== "" && priority.value !== ""
+);
 
 function submitTodo(): void {
-  if (text.value.trim() !== "" && priority.value !== "") {
+  const trimmedText = text.value.trim();
+
+  if (trimmedText !== "" && priority.value !== "") {
     emit("add-todo", {
-      text: text.value,
+      text: trimmedText,
       priority: priority.value,
     });
     text.value = "";
@@ -26,111 +41,56 @@ function submitTodo(): void {
 </script>
 
 <template>
-  <form id="todo-form" v-on:submit.prevent="submitTodo">
-    <span id="input-and-counter">
-      <textarea
+  <form class="grid gap-4" v-on:submit.prevent="submitTodo">
+    <div class="grid gap-2">
+      <div class="flex items-center justify-between gap-3">
+        <Label for="todo-input">Task</Label>
+        <p
+          v-bind:class="[
+            'text-xs',
+            tooLong ? 'text-destructive' : 'text-muted-foreground',
+          ]"
+        >
+          {{ charsLeft }} characters left
+        </p>
+      </div>
+      <Textarea
         id="todo-input"
         v-model="text"
+        class="min-h-24 resize-y"
         maxlength="50"
         placeholder="Add task..."
-        rows="2"
-        style="resize: vertical"
-      ></textarea>
-      <p v-if="tooLong" class="warning">⚠️ Max 50 characters reached!</p>
-      <p v-else class="counter">{{ charsLeft }} characters left</p>
-    </span>
-    <select id="priority" v-model="priority">
-      <option disabled value="">-- Select priority --</option>
-      <option value="low">Low</option>
-      <option value="medium">Medium</option>
-      <option value="high">High</option>
-    </select>
+        rows="3"
+      />
+    </div>
 
-    <button id="add-todo-button" type="submit">Add</button>
+    <div class="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+      <div class="grid gap-2">
+        <Label for="priority-select">Priority</Label>
+        <Select v-model="priority">
+          <SelectTrigger id="priority-select" class="w-full sm:w-52">
+            <SelectValue placeholder="Select priority" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem
+              v-for="option in priorityOptions"
+              v-bind:key="option.value"
+              v-bind:value="option.value"
+            >
+              {{ option.label }}
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <Button
+        class="h-9 w-full sm:w-auto"
+        type="submit"
+        v-bind:disabled="!canSubmit"
+      >
+        <PlusIcon class="size-4" aria-hidden="true" />
+        Add
+      </Button>
+    </div>
   </form>
 </template>
-
-<style scoped>
-#todo-form {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-areas:
-    "input input"
-    "priority add-todo-button";
-  gap: 12px;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-#input-and-counter {
-  grid-area: input;
-  display: flex;
-  flex-direction: column;
-}
-
-#todo-input {
-  padding: 8px;
-  border-radius: 8px;
-  width: 50ch;
-  margin-bottom: 4px;
-  font-family: monospace;
-  box-sizing: border-box;
-}
-
-.warning {
-  color: red;
-  font-size: 0.9rem;
-  margin: 0 0 8px;
-  height: 1.5rem;
-}
-
-.counter {
-  font-size: 0.8rem;
-  color: #666;
-  margin: 0 0 8px;
-  height: 1.5rem;
-}
-
-#priority {
-  grid-area: priority;
-  display: inline-flex;
-  margin: 8px 0;
-  padding: 6px;
-  border-radius: 6px;
-}
-
-#add-todo-button {
-  grid-area: add-todo-button;
-  display: inline-flex;
-  margin: auto;
-  background-color: #4caf50;
-  border: none;
-  border-radius: 6px;
-  color: white;
-  cursor: pointer;
-  padding: 6px 12px;
-}
-
-#add-todo-button:hover {
-  background-color: #45a049;
-}
-
-@media screen and (max-width: 600px) {
-  #todo-form {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "input"
-      "priority"
-      "add-todo-button";
-    gap: 8px;
-  }
-
-  #todo-input {
-    width: 30ch;
-  }
-
-  #add-todo-button {
-    padding: 12px 18px;
-  }
-}
-</style>
