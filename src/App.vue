@@ -22,15 +22,25 @@ type LoginCredentials = {
 const todos = ref<Todo[]>([]);
 
 function addTodo(newTodo: NewTodo): void {
+  const createdAt = Date.now();
+
   todos.value.push({
-    id: Date.now(),
+    id: createdAt,
     text: newTodo.text,
     priority: newTodo.priority,
+    createdAt,
+    pinned: false,
   });
 }
 
 function removeTodo(id: number): void {
   todos.value = todos.value.filter((todo) => todo.id !== id);
+}
+
+function togglePinned(id: number): void {
+  todos.value = todos.value.map((todo) =>
+    todo.id === id ? { ...todo, pinned: !todo.pinned } : todo,
+  );
 }
 
 const loggedIn = ref(false);
@@ -56,6 +66,10 @@ const todoCountLabel = computed(() => {
 
 const sortedTodos = computed<Todo[]>(() => {
   return [...todos.value].sort((a, b) => {
+    if (a.pinned !== b.pinned) {
+      return a.pinned ? -1 : 1;
+    }
+
     if (sortBy.value === "text") {
       return a.text.localeCompare(b.text);
     } else if (sortBy.value === "priority") {
@@ -142,7 +156,11 @@ const sortedTodos = computed<Todo[]>(() => {
 
         <Separator />
 
-        <ToDoList v-bind:todos="sortedTodos" v-on:remove-todo="removeTodo" />
+        <ToDoList
+          v-bind:todos="sortedTodos"
+          v-on:remove-todo="removeTodo"
+          v-on:toggle-pinned="togglePinned"
+        />
       </section>
     </main>
   </div>

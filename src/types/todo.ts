@@ -4,9 +4,11 @@ export type Todo = {
   id: number;
   text: string;
   priority: Priority;
+  createdAt: number;
+  pinned: boolean;
 };
 
-export type NewTodo = Omit<Todo, "id">;
+export type NewTodo = Pick<Todo, "text" | "priority">;
 
 export type SortKey = "id" | "text" | "priority";
 

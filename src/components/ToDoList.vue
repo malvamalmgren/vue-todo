@@ -8,6 +8,7 @@ defineProps<{
 
 const emit = defineEmits<{
   "remove-todo": [id: number];
+  "toggle-pinned": [id: number];
 }>();
 </script>
 
@@ -28,6 +29,7 @@ const emit = defineEmits<{
       v-bind:key="todo.id"
       v-bind:todo="todo"
       v-on:remove-todo="emit('remove-todo', todo.id)"
+      v-on:toggle-pinned="emit('toggle-pinned', todo.id)"
     />
   </ul>
 </template>
